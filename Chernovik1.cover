@@ -1,0 +1,165 @@
+    1: import matplotlib.pyplot as plt
+    1: import numpy as np
+    1: from numpy import loadtxt
+    1: import matplotlib
+    1: from scipy.interpolate import interp1d
+    1: import pylab as pl
+    1: IshodData=loadtxt('IshodData.txt',delimiter='   ',unpack=False)
+    1: IshodData2=loadtxt('IshodData2.txt',delimiter=' ',unpack=False)
+    1: IshodData3=loadtxt('IshodData3.txt',delimiter=' ',unpack=False)
+    1: Ampl=IshodData[0]
+    1: PotEn=IshodData[1]
+    1: Ampl2=IshodData2[0]
+    1: PotEn2=IshodData2[1]
+    1: Ampl3=IshodData3[0]
+    1: PotEn3=IshodData3[1]
+    1: SortAmpl=np.sort(Ampl)
+    1: SortPotEn=np.sort(PotEn)
+    1: SortAmpl2=np.sort(Ampl2)
+    1: SortPotEn2=np.sort(PotEn2)
+    1: SortAmpl3=np.sort(Ampl3)
+    1: SortPotEn3=np.sort(PotEn3)
+    1: i=len(PotEn2)-1
+  153: while i>=0:
+  152:         if PotEn2[i]>120:
+    2:                 PotEn2=np.delete(PotEn2,i)
+    2:                 Ampl2=np.delete(Ampl2,i)
+  152:         i=i-1
+    1: i=len(PotEn3)-1
+  128: while i>=0:
+  127:         if PotEn3[i]>100:
+    8:                 PotEn3=np.delete(PotEn3,i)
+    8:                 Ampl3=np.delete(Ampl3,i)
+  127:         i=i-1
+    1: i=len(PotEn)-1
+  219: while i>=0:
+  218:         if PotEn[i]>150:
+    1:                 PotEn=np.delete(PotEn,i)
+    1:                 Ampl=np.delete(Ampl,i)
+  218:         i=i-1
+       
+    1: AmplObsh=[]
+    1: AmplObsh=np.append(AmplObsh,Ampl)
+    1: AmplObsh=np.append(AmplObsh,Ampl2)
+    1: AmplObsh=np.append(AmplObsh,Ampl3)
+       
+    1: PotEnObsh=[]
+    1: PotEnObsh=np.append(PotEnObsh,PotEn)
+    1: PotEnObsh=np.append(PotEnObsh,PotEn2)
+    1: PotEnObsh=np.append(PotEnObsh,PotEn3)
+       
+    1: k1=PotEn/Ampl
+    1: k2=PotEn2/Ampl2
+    1: k3=PotEn3/Ampl3
+    1: k=[]
+    1: k=np.append(k,k1)
+    1: k=np.append(k,k2)
+    1: k=np.append(k,k3)
+       
+       
+       
+       #from scipy.stats.stats import pearsonr
+       
+       #print(pearsonr(AmplObsh,PotEnObsh))
+       
+       #print(pearsonr(AmplObsh,k))
+       #print(pearsonr(k,PotEnObsh))
+       
+       # plt.figure(1)
+       # UrPotEn=1.9199*Ampl-25.572
+       # plt.plot(Ampl,PotEn,'ro',Ampl,UrPotEn,'-')
+       # plt.xlabel('Амплитуда ВГВ, отн. ед.')
+       # plt.ylabel('Потенциальная энергия, Дж/кг')
+       # plt.title('Афганистан(Вся выборка)')
+       # plt.text(50,20,'E=1.9199*A-25.572',rotation=0,fontsize=10)
+       # plt.grid(True)
+       
+       
+       # plt.figure(2)
+       # UrPotEn2=1.7454*Ampl2-19.615
+       # plt.plot(Ampl2,PotEn2,'ro',Ampl2,UrPotEn2,'-')
+       # plt.xlabel('Амплитуда ВГВ, отн. ед.')
+       # plt.ylabel('Потенциальная энергия, Дж/кг')
+       # plt.title('Китай(Вся выборка)')
+       # plt.text(50,20,'E=1.7454*A-19.615',rotation=0,fontsize=10)
+       # plt.grid(True)
+       
+       
+       # plt.figure(3)
+       # UrPotEn3=1.6396*Ampl3-16.022
+       # plt.plot(Ampl3,PotEn3,'ro',Ampl3,UrPotEn3,'-')
+       # plt.xlabel('Амплитуда ВГВ, отн. ед.')
+       # plt.ylabel('Потенциальная энергия, Дж/кг')
+       # plt.title('Средняя Азия(Вся выборка)')
+       # plt.text(50,20,'E=1.6396*A-16.022',rotation=0,fontsize=10)
+       # plt.grid(True)
+       
+       
+       
+       
+       
+       
+    1: def Koef_Kor(a,b):
+    1:         x=np.mean(a)
+    1:         y=np.mean(b)
+    1:         sumchis=0
+  217:         for i in range(0,len(a)-1):
+  216:                 sumchis=sumchis+((a[i]-x)*(b[i]-y))
+    1:         sumznam1=0
+    1:         sumznam2=0
+  217:         for i in range(0,len(a)-1):
+  216:                 sumznam1=sumznam1+np.sqrt((a[i]-x)**2)
+  217:         for i in range(0,len(a)-1):
+  216:                 sumznam2=sumznam2+np.sqrt((b[i]-y)**2)
+    1:         r=(sumchis)/(sumznam1*sumznam2)
+    1:         return r
+       
+    1: print(Koef_Kor(Ampl,PotEn))
+       
+       
+    1: def IFR(k,l):
+               Raz=np.max(k)-np.min(k)
+               k=np.sort(k)
+               delta=Raz/l
+               Inter=[k[0]]
+               for i in range(1,l):
+                       j=k[0]+delta*i
+                       Inter.append(j)
+               KolPop=[1]
+               for i in range(0,len(Inter)-1):
+                       j=0
+                       for m in range(0,len(k)-1):
+                               if k[m]>Inter[i] and k[m]<=Inter[i+1]:
+                                       j=j+1
+                       KolPop.append(j)
+               KolPop[len(KolPop)-1]=1
+               ver=[]
+               for number in KolPop:
+                       ver.append(number/len(k))
+               NakopVer=[0.002,0.006,0.008,0.01,0.02,0.03,0.038,0.065,0.092,0.111,0.142,0.165,0.181,0.214,0.233,0.258,0.309,0.334,0.371,0.39,0.433,0.454,0.475,0.491,0.512,0.528,0.547,0.563,0.588,0.596,0.606,0.625,0.652,0.666,0.685,0.693,0.701,0.717,0.738,0.75,0.777,0.791,0.807,0.828,0.847,0.857,0.871,0.877,0.883,0.885,0.891,0.895,0.897,0.903,0.909,0.911,0.919,0.921,0.925,0.929,0.935,0.937,0.941,0.943,0.943,0.949,0.951,0.955,0.957,0.961,0.969,0.973,0.973,0.973,0.973,0.975,0.981,0.981,0.981,0.981,0.981,0.983,0.983,0.985,0.985,0.985,0.987,0.989,0.989,0.989,0.989,0.989,0.989,0.991,0.991,0.993,0.993,0.995,0.995,0.997]
+               plt.plot(Inter,NakopVer,'ro')
+               plt.show()
+               return np.round(ver,decimals=3),np.round(Inter,decimals=2),KolPop
+       
+               
+               
+       # print(IFR(k,100))
+       
+       
+       
+               
+    1: def DovInter(n,k):
+               Sred=np.mean(n)
+               NormOtkl=np.std(n)
+               Razmax=np.max(n)-np.min(n)
+               Mediana=np.median(n)
+               print('Средняя '+str(k+': ')+str(np.round(Sred,decimals=2))+'+'+str(np.round(NormOtkl,decimals=2)))
+               print('Дисперсия '+str(k+': ')+str(np.round(NormOtkl,decimals=2)))
+               print('Медиана '+str(k+': ')+str(np.round(Mediana,decimals=2)))
+               a='Доверительный интервал '+str(k)+':'+str(np.round(Mediana-np.sqrt(NormOtkl),decimals=2))+'<m<'+str(np.round(Mediana+np.sqrt(NormOtkl),decimals=2))
+               return a
+       
+       # print(DovInter(k,"для всей выборки"))
+       # print(DovInter(k1,"для Афганистана"))
+       # print(DovInter(k2,"для Китая"))
+       # print(DovInter(k3,"для Средней Азии"))
